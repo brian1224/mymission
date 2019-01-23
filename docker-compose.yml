@@ -1,0 +1,29 @@
+version: '3'
+services:   
+    jupyter:
+#用dockerfile來建立image
+        build: .
+        container_name: my_jupyter
+#./work:====是指本地的儲存位置
+#/home/jovyan/work====是指container儲存的地方
+        volumes:  
+          - ./work:/home/jovyan/work
+#我開給jupyter的port號,container的8888,mapping到host的9999
+        ports:
+          - "9999:8888"
+#是要啟動jupyter不需要密碼
+        command: start-notebook.sh --NotebookApp.token=''
+
+    mariaDB: 
+#就不是用dockerfile,去抓image來用
+        image: mariadb
+#掛掉就重啟
+        restart: always  
+        container_name: my_mariadb
+        ports:
+          - "3306:3306"
+        volumes:
+          - ./data:/var/lib/mysql
+#環境變數,設定root登入的密碼
+        environment:
+          MYSQL_ROOT_PASSWORD: db
